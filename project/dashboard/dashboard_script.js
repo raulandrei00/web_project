@@ -1,6 +1,6 @@
 // Load saved images from localStorage
 let username = localStorage.getItem('currentUser');
-console.log("Username:", username);
+// console.log("Username:", username);
 if (!username) {
     username = prompt("Enter your username:");
     localStorage.setItem('username', username);
