@@ -1,30 +1,91 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-}
-#toolbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    z-index: 1000;
-    margin-bottom: 10px;
-}
-#toolbar button, #toolbar input {
-    margin-right: 10px;
+/* import the same fonts the start page uses */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rubik:wght@400;500;700&display=swap');
+
+:root {
+  --primary: #05386B;
+  --secondary: #5CDB95;
+  --background: #EDF5E1;
+  --text-dark: #333333;
+  --text-light: #FFFFFF;
+  --btn-radius: 8px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+/* Toolbar bar */
+#toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--background);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+}
+
+/* Labels */
+#toolbar label {
+  margin-right: 6px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* Color & Number inputs */
+#toolbar input[type="color"],
+#toolbar input[type="number"] {
+  border: 1px solid var(--secondary);
+  border-radius: var(--btn-radius);
+  padding: 8px;
+  font-size: 1rem;
+  margin-right: 10px;
+  background: var(--text-light);
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#toolbar input[type="color"]:focus,
+#toolbar input[type="number"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(5,56,107,0.2);
+}
+
+/* Buttons (Clear, Save, View Saved) */
+#toolbar button {
+  margin-right: 10px;
+  background: linear-gradient(45deg, var(--secondary), var(--primary));
+  background-size: 200% 200%;
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: background-position 0.3s ease, transform 0.2s ease;
+}
+
+#toolbar button:hover {
+  transform: translateY(-3px);
+  background-position: 100% 0;
+}
+
+/* Canvas styling */
 canvas {
-    /* make canvas bigger */
-    
-    border: 1px solid #000;
-    cursor: crosshair;
+  border: 1px solid var(--primary);
+  cursor: crosshair;
 }

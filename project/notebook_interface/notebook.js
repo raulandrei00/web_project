@@ -4,6 +4,8 @@ const colorPicker = document.getElementById('color');
 const sizeInput = document.getElementById('size');
 const clearButton = document.getElementById('clear');
 const container = document.getElementById('canvas-container');
+let username = localStorage.getItem('currentUser');
+
 
 let drawing = false;
 let brushColor = colorPicker.value;
@@ -71,9 +73,15 @@ canvas.addEventListener('mouseleave', () => drawing = false);
 // Save the canvas as an image
 document.getElementById('save').addEventListener('click', () => {
     const imgSrc = canvas.toDataURL('image/png');
-    let saved = JSON.parse(localStorage.getItem("savedImages") || "[]");
-    saved.push(imgSrc);
-    localStorage.setItem("savedImages", JSON.stringify(saved));
+    const canvasData = {
+        img: imgSrc,
+        width: canvas.width,
+        height: canvas.height
+    };
+    const userKey = `savedImages_${username}`;
+    let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
+    saved.push(canvasData);
+    localStorage.setItem(userKey, JSON.stringify(saved));
     alert("Image saved in browser!");
 });
 
@@ -81,12 +89,15 @@ document.getElementById('save').addEventListener('click', () => {
 window.addEventListener('DOMContentLoaded', () => {
     const openImage = localStorage.getItem('openImage');
     if (openImage) {
+        const data = JSON.parse(openImage);
         const img = new Image();
         img.onload = function() {
+            canvas.width = data.width;
+            canvas.height = data.height;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-        img.src = openImage;
+        img.src = data.img;
         localStorage.removeItem('openImage');
     }
 });
