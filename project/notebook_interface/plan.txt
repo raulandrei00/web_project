@@ -1,0 +1,8 @@
+to do:
+1) finalise "save" functionality
+2) add more features
+	import image
+	ctrl-Z
+	eraser
+	stickers
+	scroll down
