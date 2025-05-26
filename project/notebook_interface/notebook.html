@@ -17,7 +17,49 @@
         <input type="number" id="size" min="1" max="50" value="5">
         <button id="clear">Clear</button>
         <button id="save">Save</button> 
-        <a href="../dashboard/dashboard.html">View Saved Canvases</a>
+        <!-- <a href="../dashboard/dashboard.html">View Saved Canvases</a> -->
+        <style> 
+            #userCircle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #2196f3;
+            }
+        </style>
+        <button id="userCircle" style="width:40px; height:40px; border-radius:50%; background:#eee; border:none; font-size:1.2em; font-weight:bold; cursor:pointer;">
+            <script>
+                const user = localStorage.getItem("currentUser") || "?";
+                document.currentScript.parentElement.textContent = user.charAt(0).toUpperCase();
+            </script>
+        </button>
+        <style>
+            #toolbar {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 10px;
+                position: relative;
+            }
+            #userCircle {
+                margin-left: auto;
+            }
+        </style>
+        <span id="dashboardHint" style="display:none; position:absolute; right:60px; top:50%; transform:translateY(-50%); background:#fff; border:1px solid #ccc; padding:4px 8px; border-radius:4px; font-size:0.95em; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            Go to dashboard
+        </span>
+        <script>
+            const userCircle = document.getElementById('userCircle');
+            const dashboardHint = document.getElementById('dashboardHint');
+            userCircle.addEventListener('mouseenter', () => {
+                dashboardHint.style.display = 'block';
+            });
+            userCircle.addEventListener('mouseleave', () => {
+                dashboardHint.style.display = 'none';
+            });
+            userCircle.addEventListener('click', () => {
+                window.location.href = '../dashboard/dashboard.html';
+            });
+        </script>
     </div>
     <div id="canvas-container" style="width:90vw; height:80vh; overflow:auto; margin-top:80px;">
         <canvas id="drawingCanvas" width="2000" height="1000"></canvas>

@@ -82,7 +82,22 @@ document.getElementById('save').addEventListener('click', () => {
     let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
     saved.push(canvasData);
     localStorage.setItem(userKey, JSON.stringify(saved));
-    alert("Image saved in browser!");
+    // Create a temporary popup message
+    const popup = document.createElement('div');
+    popup.textContent = "Image saved in browser!";
+    popup.style.position = 'fixed';
+    popup.style.top = '20px';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.background = '#333';
+    popup.style.color = '#fff';
+    popup.style.padding = '10px 20px';
+    popup.style.borderRadius = '5px';
+    popup.style.zIndex = 1000;
+    document.body.appendChild(popup);
+    setTimeout(() => {
+        popup.remove();
+    }, 1500);
 });
 
 // Load image if needed (your existing logic)
