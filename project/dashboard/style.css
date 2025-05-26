@@ -1,3 +1,6 @@
+/* style.css */
+
+/* 1) Fonts + theme variables */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rubik:wght@400;500;700&display=swap');
 
 :root {
@@ -10,15 +13,17 @@
   --shadow:     0 4px 16px rgba(0,0,0,0.1);
 }
 
+/* 2) Page reset + layout */
 body {
   margin: 0;
-  padding: 40px;
+  padding: 40px 20px 20px;
   background: var(--background);
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
   text-align: center;
 }
 
+/* Heading */
 h1 {
   font-family: 'Rubik', sans-serif;
   font-size: 2rem;
@@ -26,6 +31,7 @@ h1 {
   margin-bottom: 24px;
 }
 
+/* 3) Gallery */
 .gallery {
   display: flex;
   flex-wrap: wrap;
@@ -42,11 +48,11 @@ h1 {
   cursor: pointer;
   transition: box-shadow 0.2s ease;
 }
-
 .gallery img:hover {
   box-shadow: 0 0 10px var(--secondary);
 }
 
+/* Empty message */
 .empty-msg {
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
@@ -55,22 +61,59 @@ h1 {
   margin-top: 40px;
 }
 
-button {
-    margin-right: 10px;
-    background: linear-gradient(45deg, var(--secondary), var(--primary));
-    background-size: 200% 200%;
-    color: var(--text-light);
-    border: none;
-    border-radius: var(--btn-radius);
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: var(--shadow);
-    cursor: pointer;
-    transition: background-position 0.3s ease, transform 0.2s ease;
-  }
-  
-  button:hover {
-    transform: translateY(-3px);
-    background-position: 100% 0;
-  }
+/* 4) “Back to Notebook” + “Start Page” buttons  
+   Override inline white-on-blue styles using attribute selectors + !important */
+button[onclick*="notebook.html"],
+button[onclick*="start.html"] {
+  margin-right: 24px !important;
+  background: linear-gradient(45deg, var(--secondary), var(--primary)) !important;
+  background-size: 200% 200% !important;
+  color: var(--text-light) !important;
+  border: none !important;
+  border-radius: var(--btn-radius) !important;
+  padding: 12px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow) !important;
+  cursor: pointer !important;
+  transition: background-position 0.3s ease, transform 0.2s ease !important;
+}
+button[onclick*="notebook.html"]:hover,
+button[onclick*="start.html"]:hover {
+  transform: translateY(-3px) !important;
+  background-position: 100% 0 !important;
+}
+
+/* 5) Fixed header bar (moved from inline) */
+div[style*="position:fixed"] {
+  width: 100%;
+  background: var(--primary);
+  color: var(--text-light);
+  padding: 16px 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+div[style*="position:fixed"] span {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-left: 24px;
+}
+
+/* 6) Spacer below the header */
+div[style*="height:60px"] {
+  height: 60px;
+}
+
+/* (Optionally) ensure gallery and h1 aren’t hidden under the header */
+body > h1,
+body > .gallery,
+body > .empty-msg {
+  margin-top: 80px;
+}
