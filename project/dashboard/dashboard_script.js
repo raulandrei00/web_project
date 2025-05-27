@@ -38,7 +38,9 @@ if (saved.length === 0) {
     img.src = data.img;
 
     previewCanvas.onclick = () => {
-      localStorage.setItem('openImage', JSON.stringify(saved[idx]));
+      // When opening a canvas for editing:
+      const dataWithIndex = { ...saved[idx], _idx: idx };
+      localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
       window.location.href = "../notebook_interface/notebook.html";
     };
     gallery.appendChild(previewCanvas);

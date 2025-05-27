@@ -5,7 +5,7 @@ const sizeInput = document.getElementById('size');
 const clearButton = document.getElementById('clear');
 const container = document.getElementById('canvas-container');
 let username = localStorage.getItem('currentUser');
-
+let openedCanvasIndex = null;
 
 let drawing = false;
 let brushColor = colorPicker.value;
@@ -16,8 +16,9 @@ sizeInput.addEventListener('input', (e) => brushSize = e.target.value);
 clearButton.addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
 
 // Dynamic canvas growth
-const GROW_MARGIN = 1;
-const GROW_AMOUNT = 10;
+
+const GROW_MARGIN = 10;
+const GROW_AMOUNT = 50;
 
 function growCanvasIfNeeded() {
     if (container.scrollTop + container.clientHeight >= container.scrollHeight - GROW_MARGIN) {
@@ -31,7 +32,10 @@ function growCanvasIfNeeded() {
         // Resize and restore
         canvas.height += GROW_AMOUNT;
         ctx.drawImage(temp, 0, 0);
-
+        canvas.style.transition = 'height 0.3s cubic-bezier(0.4,0,0.2,1)';
+        setTimeout(() => {
+            canvas.style.transition = '';
+        }, 150);
         // Keep user just above the trigger zone
         container.scrollTop = container.scrollHeight - container.clientHeight - 2 * GROW_MARGIN;
     }
@@ -80,7 +84,11 @@ document.getElementById('save').addEventListener('click', () => {
     };
     const userKey = `savedImages_${username}`;
     let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
-    saved.push(canvasData);
+    if (openedCanvasIndex !== null && saved[openedCanvasIndex]) {
+        saved[openedCanvasIndex] = canvasData; // Replace existing
+    } else {
+        saved.push(canvasData); // Add new
+    }
     localStorage.setItem(userKey, JSON.stringify(saved));
     // Create a temporary popup message
     const popup = document.createElement('div');
@@ -105,6 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const openImage = localStorage.getItem('openImage');
     if (openImage) {
         const data = JSON.parse(openImage);
+        openedCanvasIndex = data._idx; // Store the index if present
         const img = new Image();
         img.onload = function() {
             canvas.width = data.width;
