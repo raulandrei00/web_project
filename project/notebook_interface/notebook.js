@@ -118,6 +118,14 @@ canvas.addEventListener('mouseleave', () => {
 
 // --- Save/Load functionality ---
 document.getElementById('save').addEventListener('click', () => {
+  let username = localStorage.getItem('currentUser');
+  if (!username) {
+    promptLogin(() => {
+      // Try saving again after successful login
+      document.getElementById('save').click();
+    });
+    return;
+  }
   const imgSrc = canvas.toDataURL('image/png');
   const canvasData = { img: imgSrc, width: canvas.width, height: canvas.height };
   const userKey = `savedImages_${username}`;
@@ -158,3 +166,57 @@ window.addEventListener('DOMContentLoaded', () => {
     saveState();
   }
 });
+
+function promptLogin(callback) {
+  // Simple modal prompt (like start.html)
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.background = 'rgba(0,0,0,0.3)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 2000;
+
+  modal.innerHTML = `
+    <div style="background:#fff;padding:32px 24px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:300px;">
+      <h3 style="margin-top:0;">Login Required</h3>
+      <div id="loginMsg" style="color:#c00;margin-bottom:10px;"></div>
+      <form id="loginForm">
+        <div style="margin-bottom:10px;">
+          <input id="loginUsername" placeholder="Username" style="width:100%;padding:8px;" required>
+        </div>
+        <div style="margin-bottom:16px;">
+          <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;" required>
+        </div>
+        <button type="submit" style="width:100%;padding:10px;background:#05386B;color:#fff;border:none;border-radius:6px;font-weight:bold;">Log In</button>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const loginForm = modal.querySelector('#loginForm');
+  const loginMsg = modal.querySelector('#loginMsg');
+  loginForm.onsubmit = e => {
+    e.preventDefault();
+    const u = loginForm.loginUsername.value.trim();
+    const p = loginForm.loginPassword.value;
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const valid = users.some(x => x.username === u && x.password === p);
+    if (valid) {
+      localStorage.setItem('currentUser', u);
+      modal.remove();
+      if (callback) callback(u);
+    const userCircle = document.getElementById('userCircle');   
+    if (userCircle && u) {
+        userCircle.textContent = u.charAt(0).toUpperCase();
+    }
+    } else {
+      loginMsg.textContent = 'Invalid credentials.';
+    }
+  };
+}

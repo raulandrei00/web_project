@@ -61,12 +61,12 @@
   </div>
 
   <script>
+    localStorage.clear(); // Clear localStorage for demo purposes
     // Persistent user storage (merge the shipped users + any new sign-ups)
     const users = JSON.parse(localStorage.getItem('users'))
                   || [{username:'Cezara',password:'cezara123'},{username:'Raul',password:'raul123'}];
     // Save seed if first run
     localStorage.setItem('users', JSON.stringify(users));
-    localStorage.clear(); // Clear localStorage for demo purposes
     // Track current logged-in user
     let currentUser = localStorage.getItem('currentUser') || null;
 
