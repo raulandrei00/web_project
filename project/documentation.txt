@@ -1,0 +1,30 @@
+canvas-style drawing tool which supports multiple users with individual dashboards and saved work
+
+1) start page
+- sign up button: creates a user with a password and stores it in local memory
+- log in button: opens the login prompt
+-log in prompt: takes a user and password input and checks for user matches in the memory, then checks the password
+    if the user exists and has inputted the correct password, the prompt displays "Welcome back!" and creates a variable to account for the current user 
+-start button: immediately opens a new empty canvas named "Canvas 1".
+- dashboard button: opens the user's dashboard
+
+2) notebook page: the main page where users can modify canvases
+- toolbar: has html inputs to select color and size of the brush
+           a circular button with the initial of the user that redirects to dashboard (hints this upon hover as well)
+           initially this button displays ? if no user is logged in yet
+           a textbox that contains the name of the canvas (can be edited by user)
+           the name of the first canvas is Canvas 1 by default. The name of any subsequently created canvas is "Canvas X"
+           where X is the first number starting from 1 for which "Canvas X" does not appear yet in the user's saved files
+            adjusts with display resizing
+            clear and undo button (self explainatory)
+            save button (saves current canvas). if this is a new canvas it appends it to the list, if this is a canvas ever saved before, it just replaces
+- the canvas itself:
+    the user can see and scroll through a canvas that is initially 3000 by 2000 pixels. (the displayed window can be smaller depending on the monitor)
+    the canvas expands horizontally when scrolling down towards the bottom of the already generated canvas.
+
+3) dashboard
+- a log out button that also redirects to start page
+- the main part of the page displays the array of saved canvases along with their names (for current user), 
+    that also adjusts dinamically with display resizing
+    clicking on a canvas will open it in a notebook
+    the first "dummy canvas" is an option to create a new canvas
