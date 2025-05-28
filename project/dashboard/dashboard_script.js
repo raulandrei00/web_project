@@ -28,7 +28,10 @@ if (saved.length === 0) {
     const ctx = previewCanvas.getContext('2d');
     const img = new Image();
     img.onload = function() {
-      ctx.clearRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+      // Fill background with white
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+      // Draw the image preview
       ctx.drawImage(
         img,
         0, 0, 3000, 2000, // source x, y, width, height (from original)
@@ -38,7 +41,6 @@ if (saved.length === 0) {
     img.src = data.img;
 
     previewCanvas.onclick = () => {
-      // When opening a canvas for editing:
       const dataWithIndex = { ...saved[idx], _idx: idx };
       localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
       window.location.href = "../notebook_interface/notebook.html";
