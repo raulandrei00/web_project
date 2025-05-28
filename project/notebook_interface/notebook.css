@@ -39,7 +39,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--background);
+  background: #05386B;
   padding: 5px;
   display: flex;
   align-items: center;
@@ -52,7 +52,8 @@ body {
 /* Labels */
 #toolbar label {
   margin-right: 6px;
-  color: var(--text-dark);
+  color: #FFFFFF;
+  font-family: 'Rubik', sans-serif;
   font-weight: 500;
 }
 
