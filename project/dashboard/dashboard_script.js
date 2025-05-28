@@ -60,7 +60,7 @@ function promptLogin(callback) {
   };
 }
 
-/* eslint-disable indent */
+
 const PREVIEW_WIDTH = 300;
 const PREVIEW_HEIGHT = 200;
 
