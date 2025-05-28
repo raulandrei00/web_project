@@ -193,6 +193,9 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     img.src = data.img;
     localStorage.removeItem('openImage');
+    namebox = document.getElementById('canvasName');
+    namebox.value = data.name || "Untitled";
+
   } else {
     // initial blank state
     saveState();

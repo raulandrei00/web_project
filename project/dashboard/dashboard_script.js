@@ -17,55 +17,7 @@ const PREVIEW_HEIGHT = 200;
 if (saved.length === 0) {
   emptyMsg.style.display = 'block';
 } else {
-  saved.forEach((data, idx) => {
-    console.log("Name:", data.name);
-    const container = document.createElement('div');
-    container.style.display = 'flex';
-    container.style.flexDirection = 'column';
-    container.style.alignItems = 'center';
-    container.style.margin = '12px';
-
-    const nameElem = document.createElement('div');
-    nameElem.textContent = data.name || 'Untitled';
-    nameElem.style.marginBottom = '6px';
-    nameElem.style.fontWeight = 'bold';
-    nameElem.style.fontSize = '1rem';
-    nameElem.style.color = '#05386B';
-
-    container.appendChild(nameElem);
-    const previewCanvas = document.createElement('canvas');
-    previewCanvas.width = PREVIEW_WIDTH;
-    previewCanvas.height = PREVIEW_HEIGHT;
-    previewCanvas.style.border = "2px solid #05386B";
-    previewCanvas.style.borderRadius = "8px";
-    previewCanvas.style.cursor = "pointer";
-    previewCanvas.title = `Click to open in notebook`;
-
-    const ctx = previewCanvas.getContext('2d');
-    const img = new Image();
-    img.onload = function() {
-      // Fill background with white
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
-      // Draw the image preview
-      ctx.drawImage(
-        img,
-        0, 0, 3000, 2000, // source x, y, width, height (from original)
-        0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT // dest x, y, width, height (preview)
-      );
-    };
-    img.src = data.img;
-
-    previewCanvas.onclick = () => {
-      const dataWithIndex = { ...saved[idx], _idx: idx };
-      localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
-      window.location.href = "../notebook_interface/notebook.html";
-    };
-    container.appendChild(previewCanvas);
-    gallery.appendChild(container);
-  });
-}
-
+  
 // Add "new canvas" preview
 const newCanvasPreview = document.createElement('canvas');
 newCanvasPreview.width = PREVIEW_WIDTH;
@@ -112,5 +64,51 @@ newCanvasContainer.appendChild(newCanvasLabel);
 newCanvasContainer.appendChild(newCanvasPreview);
 
 gallery.appendChild(newCanvasContainer);
+  saved.forEach((data, idx) => {
+    console.log("Name:", data.name);
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.margin = '12px';
 
-// gallery.appendChild(newCanvasPreview);
+    const nameElem = document.createElement('div');
+    nameElem.textContent = data.name || 'Untitled';
+    nameElem.style.marginBottom = '6px';
+    nameElem.style.fontWeight = 'bold';
+    nameElem.style.fontSize = '1rem';
+    nameElem.style.color = '#05386B';
+
+    container.appendChild(nameElem);
+    const previewCanvas = document.createElement('canvas');
+    previewCanvas.width = PREVIEW_WIDTH;
+    previewCanvas.height = PREVIEW_HEIGHT;
+    previewCanvas.style.border = "2px solid #05386B";
+    previewCanvas.style.borderRadius = "8px";
+    previewCanvas.style.cursor = "pointer";
+    previewCanvas.title = `Click to open in notebook`;
+
+    const ctx = previewCanvas.getContext('2d');
+    const img = new Image();
+    img.onload = function() {
+      // Fill background with white
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+      // Draw the image preview
+      ctx.drawImage(
+        img,
+        0, 0, 3000, 2000, // source x, y, width, height (from original)
+        0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT // dest x, y, width, height (preview)
+      );
+    };
+    img.src = data.img;
+
+    previewCanvas.onclick = () => {
+      const dataWithIndex = { ...saved[idx], _idx: idx, name: data.name || `Untitled ${idx + 1}` };
+      localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
+      window.location.href = "../notebook_interface/notebook.html";
+    };
+    container.appendChild(previewCanvas);
+    gallery.appendChild(container);
+  });
+}
