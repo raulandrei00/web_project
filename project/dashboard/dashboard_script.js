@@ -1,3 +1,5 @@
+"use strict";
+
 let username = localStorage.getItem('currentUser');
 
 console.log("Current user:", username);

@@ -1,3 +1,5 @@
+"use strict";
+
 if (localStorage.getItem('currentUser')) {
     localStorage.removeItem('currentUser');
 }

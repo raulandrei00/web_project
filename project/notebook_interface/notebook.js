@@ -1,3 +1,5 @@
+"use strict";
+
 const canvas = document.getElementById('drawingCanvas');
 const ctx = canvas.getContext('2d');
 const colorPicker = document.getElementById('color');
@@ -193,7 +195,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     img.src = data.img;
     localStorage.removeItem('openImage');
-    namebox = document.getElementById('canvasName');
+    let namebox = data.name ? document.getElementById('canvasName') : document.createElement('input');
     namebox.value = data.name || "Untitled";
 
   } else {
@@ -205,7 +207,7 @@ window.addEventListener('DOMContentLoaded', () => {
     while (saved.some(item => item.name === "Canvas " + canvas_no)) {
       canvas_no++;
     }
-    namebox = document.getElementById('canvasName');
+    let namebox = document.getElementById('canvasName');
     namebox.value = "Canvas " + canvas_no;
   }
 });

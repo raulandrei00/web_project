@@ -25,6 +25,7 @@
         
         <button id="userCircle" style="color: white; width:40px; height:45px; border-radius:50%; background: linear-gradient(45deg, var(--secondary), var(--primary)); border:none; font-size:1.2em; font-weight:bold; cursor:pointer;">
             <script>
+                "use strict";
                 const user = localStorage.getItem("currentUser") || "?";
                 document.currentScript.parentElement.textContent = user.charAt(0).toUpperCase();
             </script>
