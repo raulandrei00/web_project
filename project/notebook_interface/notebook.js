@@ -229,6 +229,9 @@ function promptLogin(callback) {
     const valid = users.some(x => x.username === u && x.password === p);
     if (valid) {
       localStorage.setItem('currentUser', u);
+      // Update the userCircle to the new initial
+      const userCircle = document.getElementById('userCircle');
+      if (userCircle) userCircle.textContent = u.charAt(0).toUpperCase();
       modal.remove();
       if (callback) callback(u);
     } else {
