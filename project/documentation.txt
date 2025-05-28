@@ -28,3 +28,5 @@ canvas-style drawing tool which supports multiple users with individual dashboar
     that also adjusts dinamically with display resizing
     clicking on a canvas will open it in a notebook
     the first "dummy canvas" is an option to create a new canvas
+
+*) any time you want to save or open the dashboard while you are not logged in, the log in prompt pops up asking you for username and password
