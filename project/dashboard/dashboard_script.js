@@ -1,7 +1,7 @@
 // Load saved images from localStorage
 let username = localStorage.getItem('currentUser');
 // console.log("Username:", username);
-if (!username) {
+if (!username) { // change to a login form
     username = prompt("Enter your username:");
     localStorage.setItem('username', username);
 }
