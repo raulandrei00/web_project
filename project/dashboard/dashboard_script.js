@@ -1,4 +1,3 @@
-
 let username = localStorage.getItem('currentUser');
 
 console.log("Current user:", username);
@@ -140,99 +139,248 @@ function showGallery ()
     container.style.alignItems = 'center';
     container.style.margin = '12px';
     const nameWrapper = document.createElement('div');
-    nameWrapper.style.position = 'relative';
-    nameWrapper.style.display = 'inline-block';
+    nameWrapper.style.display = 'flex';
+    nameWrapper.style.alignItems = 'center';
+    nameWrapper.style.justifyContent = 'space-between';
     nameWrapper.style.width = `${PREVIEW_WIDTH}px`;
     nameWrapper.style.boxSizing = 'border-box';
-    nameWrapper.style.textAlign = 'center';
+    nameWrapper.style.textAlign = 'left';
 
     const nameText = document.createElement('span');
     nameText.textContent = data.name || 'Untitled';
     nameText.style.fontWeight = 'bold';
     nameText.style.fontSize = '1rem';
     nameText.style.color = '#05386B';
+    nameText.style.marginLeft = '8px';
+
+    // Button group container
+    const btnGroup = document.createElement('span');
+    btnGroup.style.display = 'flex';
+    btnGroup.style.alignItems = 'center';
+    btnGroup.style.gap = '8px';
 
     const editBtn = document.createElement('span');
     editBtn.textContent = '✏️';
-    editBtn.style.marginLeft = '8px';
     editBtn.style.cursor = 'pointer';
     editBtn.style.display = 'none';
     editBtn.title = 'Edit name';
     editBtn.tabIndex = 0;
 
-    nameWrapper.appendChild(nameText);
-    nameWrapper.appendChild(editBtn);
+    const deleteBtn = document.createElement('span');
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.style.display = 'none';
+    deleteBtn.title = 'Delete image';
+    deleteBtn.tabIndex = 0;
 
+    deleteBtn.onclick = () => {
+      // Create confirmation modal
+      const confirmModal = document.createElement('div');
+      confirmModal.classList.add('modal', 'active');
+      confirmModal.innerHTML = `
+        <div class="modal-content">
+          <h3>Confirm Delete</h3>
+          <div>Are you sure you want to delete <b>${nameText.textContent}</b>?</div>
+          <div class="modal-actions" style="margin-top:16px; display:flex; gap:12px; justify-content:center;">
+            <button id="confirmDeleteYes" class="btn-center" style="background:#e74c3c;color:#fff;">Yes</button>
+            <button id="confirmDeleteNo" class="btn-center">No</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(confirmModal);
+
+      confirmModal.querySelector('#confirmDeleteYes').onclick = () => {
+        saved.splice(idx, 1);
+        localStorage.setItem(userKey, JSON.stringify(saved));
+        gallery.innerHTML = '';
+        showGallery();
+        confirmModal.remove();
+      };
+      confirmModal.querySelector('#confirmDeleteNo').onclick = () => {
+        confirmModal.remove();
+      };
+    };
+
+    const sendBtn = document.createElement('span');
+    sendBtn.textContent = '📤';
+    sendBtn.style.cursor = 'pointer';
+    sendBtn.style.display = 'none';
+    sendBtn.title = 'Send image';
+    sendBtn.tabIndex = 0;
+
+    sendBtn.onclick = () => {
+      // Create modal
+      const sendModal = document.createElement('div');
+      sendModal.classList.add('modal', 'active');
+      sendModal.innerHTML = `
+        <div class="modal-content">
+          <h3>Send Image To...</h3>
+          <input id="userSearchInput" type="text" placeholder="Type username..." style="width:90%;margin-bottom:10px;padding:6px 8px;font-size:1rem;border-radius:4px;border:1px solid #bbb;">
+          <div id="userList" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div>
+          <div class="modal-actions" style="display:flex;justify-content:center;gap:12px;">
+            <button id="sendCancelBtn" class="btn-center">Cancel</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(sendModal);
+
+      const userSearchInput = sendModal.querySelector('#userSearchInput');
+      const userList = sendModal.querySelector('#userList');
+      const sendCancelBtn = sendModal.querySelector('#sendCancelBtn');
+
+      // Get all users except current
+      let users = JSON.parse(localStorage.getItem('users') || '[]')
+        .map(u => u.username)
+        .filter(u => u !== username)
+        .sort((a, b) => a.localeCompare(b));
+
+      // Show first 5 users initially
+      let filteredUsers = users.slice(0, 5);
+
+      function renderUserList(list) {
+        userList.innerHTML = '';
+        if (list.length === 0) {
+          userList.innerHTML = '<div style="color:#888;padding:8px;">No users found.</div>';
+          return;
+        }
+        list.forEach(u => {
+          const userRow = document.createElement('div');
+          userRow.textContent = u;
+          userRow.style.padding = '8px 12px';
+          userRow.style.cursor = 'pointer';
+          userRow.style.borderRadius = '4px';
+          userRow.style.marginBottom = '2px';
+          userRow.tabIndex = 0;
+          userRow.onmouseenter = () => userRow.style.background = '#e0f0ff';
+          userRow.onmouseleave = () => userRow.style.background = '';
+          userRow.onclick = () => {
+            // Add image to selected user's memory
+            const targetKey = `savedImages_${u}`;
+            const targetImages = JSON.parse(localStorage.getItem(targetKey) || '[]');
+            // Avoid duplicate by name+img
+            if (!targetImages.some(imgObj => imgObj.name === data.name && imgObj.img === data.img)) {
+              targetImages.push({ ...data });
+              localStorage.setItem(targetKey, JSON.stringify(targetImages));
+            }
+            sendModal.remove();
+            // Optional: show confirmation
+            const okModal = document.createElement('div');
+            okModal.classList.add('modal', 'active');
+            okModal.innerHTML = `
+              <div class="modal-content">
+                <div style="margin-bottom:10px;">Image sent to <b>${u}</b>!</div>
+                <div class="modal-actions" style="display:flex;justify-content:center;">
+                  <button id="okBtn" class="btn-center">OK</button>
+                </div>
+              </div>
+            `;
+            document.body.appendChild(okModal);
+            okModal.querySelector('#okBtn').onclick = () => okModal.remove();
+          };
+          userList.appendChild(userRow);
+        });
+      }
+
+      renderUserList(filteredUsers);
+
+      userSearchInput.addEventListener('input', () => {
+        const val = userSearchInput.value.trim().toLowerCase();
+        let shown;
+        if (val === '') {
+          shown = users.slice(0, 5);
+        } else {
+          shown = users.filter(u => u.toLowerCase().includes(val));
+        }
+        renderUserList(shown);
+      });
+
+      sendCancelBtn.onclick = () => sendModal.remove();
+    };
+
+    // Add buttons to group
+    btnGroup.appendChild(editBtn);
+    btnGroup.appendChild(deleteBtn);
+    btnGroup.appendChild(sendBtn);
+
+    // Show/hide buttons on hover
     nameWrapper.addEventListener('mouseenter', () => {
       editBtn.style.display = 'inline';
+      deleteBtn.style.display = 'inline';
+      sendBtn.style.display = 'inline';
     });
     nameWrapper.addEventListener('mouseleave', () => {
       editBtn.style.display = 'none';
+      deleteBtn.style.display = 'none';
+      sendBtn.style.display = 'none';
     });
 
-        container.appendChild(nameWrapper);
-        const previewCanvas = document.createElement('canvas');
-        previewCanvas.width = PREVIEW_WIDTH;
-        previewCanvas.height = PREVIEW_HEIGHT;
-        previewCanvas.style.border = "2px solid #05386B";
-        previewCanvas.style.borderRadius = "8px";
-        previewCanvas.style.cursor = "pointer";
-        previewCanvas.title = `Click to open in notebook`;
+    // Compose the row: name on left, buttons on right
+    nameWrapper.appendChild(nameText);
+    nameWrapper.appendChild(btnGroup);
 
-        const ctx = previewCanvas.getContext('2d');
-        const img = new Image();
-        img.onload = function() {
-          // Fill background with white
-          ctx.fillStyle = "#fff";
-          ctx.fillRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
-          // Draw the image preview
-          ctx.drawImage(
-            img,
-            0, 0, 3000, 2000, // source x, y, width, height (from original)
-            0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT // dest x, y, width, height (preview)
-          );
-        };
-        img.src = data.img;
+      container.appendChild(nameWrapper);
+      const previewCanvas = document.createElement('canvas');
+      previewCanvas.width = PREVIEW_WIDTH;
+      previewCanvas.height = PREVIEW_HEIGHT;
+      previewCanvas.style.border = "2px solid #05386B";
+      previewCanvas.style.borderRadius = "8px";
+      previewCanvas.style.cursor = "pointer";
+      previewCanvas.title = `Click to open in notebook`;
 
-        previewCanvas.onclick = () => {
-          const dataWithIndex = { ...saved[idx], _idx: idx, name: data.name || `Untitled ${idx + 1}` };
-          localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
-          window.location.href = "../notebook_interface/notebook.html";
-        };
-        container.appendChild(previewCanvas);
-        gallery.appendChild(container);
+      const ctx = previewCanvas.getContext('2d');
+      const img = new Image();
+      img.onload = function() {
+        // Fill background with white
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+        // Draw the image preview
+        ctx.drawImage(
+          img,
+          0, 0, 3000, 2000, // source x, y, width, height (from original)
+          0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT // dest x, y, width, height (preview)
+        );
+      };
+      img.src = data.img;
 
-        editBtn.onclick = () => {
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.value = nameText.textContent;
-          input.style.fontSize = nameText.style.fontSize;
-          input.style.fontWeight = nameText.style.fontWeight;
-          input.style.color = nameText.style.color;
-          input.style.width = `${Math.max(80, nameText.offsetWidth)}px`;
-          nameWrapper.replaceChild(input, nameText);
-          input.focus();
-          input.select();
+      previewCanvas.onclick = () => {
+        const dataWithIndex = { ...saved[idx], _idx: idx, name: data.name || `Untitled ${idx + 1}` };
+        localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
+        window.location.href = "../notebook_interface/notebook.html";
+      };
+      container.appendChild(previewCanvas);
+      gallery.appendChild(container);
 
-          input.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-              const newName = input.value.trim() || 'Untitled';
-              nameText.textContent = newName;
-              data.name = newName;
-              saved[idx].name = newName;
-              localStorage.setItem(userKey, JSON.stringify(saved));
-              nameWrapper.replaceChild(nameText, input);
-              editBtn.style.display = 'none';
-            } else if (e.key === 'Escape') {
-              nameWrapper.replaceChild(nameText, input);
-              editBtn.style.display = 'none';
-            }
-          };
-          input.onblur = () => {
+      editBtn.onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = nameText.textContent;
+        input.style.fontSize = nameText.style.fontSize;
+        input.style.fontWeight = nameText.style.fontWeight;
+        input.style.color = nameText.style.color;
+        input.style.width = `${Math.max(80, nameText.offsetWidth)}px`;
+        nameWrapper.replaceChild(input, nameText);
+        input.focus();
+        input.select();
+
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            const newName = input.value.trim() || 'Untitled';
+            nameText.textContent = newName;
+            data.name = newName;
+            saved[idx].name = newName;
+            localStorage.setItem(userKey, JSON.stringify(saved));
             nameWrapper.replaceChild(nameText, input);
             editBtn.style.display = 'none';
-          };
+          } else if (e.key === 'Escape') {
+            nameWrapper.replaceChild(nameText, input);
+            editBtn.style.display = 'none';
+          }
         };
+        input.onblur = () => {
+          nameWrapper.replaceChild(nameText, input);
+          editBtn.style.display = 'none';
+        };
+      };
     });
   }
 }
