@@ -1,4 +1,7 @@
-localStorage.clear(); // Clear localStorage for demo purposes
+if (localStorage.getItem('currentUser')) {
+    localStorage.removeItem('currentUser');
+}
+// localStorage.clear(); // Clear localStorage for demo purposes
     // Persistent user storage (merge the shipped users + any new sign-ups)
     const users = JSON.parse(localStorage.getItem('users'))
                   || [{username:'Cezara',password:'cezara123'},{username:'Raul',password:'raul123'}];

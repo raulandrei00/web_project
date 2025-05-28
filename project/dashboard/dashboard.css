@@ -117,3 +117,105 @@ body > .gallery,
 body > .empty-msg {
   margin-top: 80px;
 }
+
+/* Modal backdrop */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(5, 56, 107, 0.4);
+  backdrop-filter: blur(6px);
+  padding: 16px;
+  z-index: 3000;
+}
+.modal.active {
+  display: flex;
+}
+
+/* Modal content box */
+.modal-content {
+  background: #FFFFFF;
+  padding: 24px 32px;
+  border-radius: var(--btn-radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+.modal-content h3 {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
+/* Form layout inside modal */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+.form-group input {
+  padding: 12px;
+  border: 1px solid var(--secondary);
+  border-radius: var(--btn-radius);
+  font-size: 1rem;
+  background: var(--background);
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(5, 56, 107, 0.2);
+}
+
+/* Messages */
+.message {
+  font-size: 0.9rem;
+  height: 1.2em;
+  margin-bottom: 12px;
+  color: var(--error-color, #E76D6D);
+}
+.message.success {
+  color: var(--secondary);
+}
+
+/* Buttons row in modal */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* Button style */
+.btn-center {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-light);
+  background: linear-gradient(45deg, var(--secondary), var(--primary));
+  background-size: 200% 200%;
+  border: none;
+  border-radius: var(--btn-radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: background-position 0.3s ease, transform 0.2s ease;
+}
+.btn-center:hover {
+  transform: translateY(-3px);
+  background-position: 100% 0;
+}
