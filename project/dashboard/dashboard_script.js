@@ -1,9 +1,6 @@
 "use strict";
 
 let username = localStorage.getItem('currentUser');
-
-console.log("Current user:", username);
-
 function promptLogin(callback) {
   // Create the modal backdrop and content like start page
   const modal = document.createElement('div');
