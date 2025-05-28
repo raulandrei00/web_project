@@ -224,6 +224,7 @@ function promptLogin(callback) {
       loginMsg.textContent = 'Invalid credentials.';
     }
   };
+  
 }
 
 // const userCircle = document.getElementById('userCircle');
