@@ -10,6 +10,8 @@ let openedCanvasIndex = null;
 
 let hasUnsavedChanges = false;
 
+
+
 // Brush state
 let drawing = false;
 let brushColor = colorPicker.value;
@@ -28,13 +30,13 @@ clearButton.addEventListener('click', () => {
 });
 
 const userCircle = document.getElementById('userCircle');
-            const dashboardHint = document.getElementById('dashboardHint');
-            userCircle.addEventListener('mouseenter', () => {
-                dashboardHint.style.display = 'block';
-            });
-            userCircle.addEventListener('mouseleave', () => {
-                dashboardHint.style.display = 'none';
-            });
+const dashboardHint = document.getElementById('dashboardHint');
+userCircle.addEventListener('mouseenter', () => {
+    dashboardHint.style.display = 'block';
+});
+userCircle.addEventListener('mouseleave', () => {
+    dashboardHint.style.display = 'none';
+});
 
 // --- Dynamic canvas growth ---
 const GROW_MARGIN = 10;
@@ -55,11 +57,9 @@ function growCanvasIfNeeded() {
 }
 container.addEventListener('scroll', growCanvasIfNeeded);
 
-// --- History management ---
+
 function saveState() {
-  // Discard any "future" states
   history = history.slice(0, historyIndex + 1);
-  // Push current canvas image
   history.push(canvas.toDataURL());
   historyIndex = history.length - 1;
 }

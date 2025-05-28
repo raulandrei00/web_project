@@ -1,5 +1,0 @@
-to do:
-1) separate html structure from css style and js script
-2) finalise user functionality:
-    personal saves and dashboards for each user
-    maybe remember settings/prefferences
