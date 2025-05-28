@@ -60,7 +60,7 @@ function promptLogin(callback) {
   };
 }
 
-
+/* eslint-disable indent */
 const PREVIEW_WIDTH = 300;
 const PREVIEW_HEIGHT = 200;
 
@@ -302,16 +302,22 @@ function showGallery ()
     btnGroup.appendChild(deleteBtn);
     btnGroup.appendChild(sendBtn);
 
+    let editing = false;
+
     // Show/hide buttons on hover
     nameWrapper.addEventListener('mouseenter', () => {
-      editBtn.style.display = 'inline';
-      deleteBtn.style.display = 'inline';
-      sendBtn.style.display = 'inline';
+      if (!editing) {
+        editBtn.style.display = 'inline';
+        deleteBtn.style.display = 'inline';
+        sendBtn.style.display = 'inline';
+      }
     });
     nameWrapper.addEventListener('mouseleave', () => {
-      editBtn.style.display = 'none';
-      deleteBtn.style.display = 'none';
-      sendBtn.style.display = 'none';
+      if (!editing) {
+        editBtn.style.display = 'none';
+        deleteBtn.style.display = 'none';
+        sendBtn.style.display = 'none';
+      }
     });
 
     // Compose the row: name on left, buttons on right
@@ -362,23 +368,34 @@ function showGallery ()
         input.focus();
         input.select();
 
+        editing = true;
+        editBtn.style.display = 'inline'; // Keep it visible while editing
+
+        let replaced = false;
+        function replaceInput(newName) {
+          if (replaced) return;
+          replaced = true;
+          nameText.textContent = newName;
+          nameWrapper.replaceChild(nameText, input);
+          editing = false;
+          editBtn.style.display = 'none';
+          deleteBtn.style.display = 'none';
+          sendBtn.style.display = 'none';
+        }
+
         input.onkeydown = (e) => {
           if (e.key === 'Enter') {
             const newName = input.value.trim() || 'Untitled';
-            nameText.textContent = newName;
             data.name = newName;
             saved[idx].name = newName;
             localStorage.setItem(userKey, JSON.stringify(saved));
-            nameWrapper.replaceChild(nameText, input);
-            editBtn.style.display = 'none';
+            replaceInput(newName);
           } else if (e.key === 'Escape') {
-            nameWrapper.replaceChild(nameText, input);
-            editBtn.style.display = 'none';
+            replaceInput(nameText.textContent);
           }
         };
         input.onblur = () => {
-          nameWrapper.replaceChild(nameText, input);
-          editBtn.style.display = 'none';
+          replaceInput(nameText.textContent);
         };
       };
     });
