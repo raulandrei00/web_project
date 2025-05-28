@@ -23,6 +23,16 @@ body {
   height: 100vh;
 }
 
+#userCircle {
+    margin-left: auto;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
 /* Toolbar bar */
 #toolbar {
   position: fixed;
@@ -30,11 +40,13 @@ body {
   left: 0;
   width: 100%;
   background: var(--background);
-  padding: 16px;
+  padding: 5px;
   display: flex;
   align-items: center;
   box-shadow: var(--shadow);
   z-index: 1000;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 /* Labels */
