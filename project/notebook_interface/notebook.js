@@ -8,6 +8,8 @@ const undoButton = document.getElementById('undo');
 let username = localStorage.getItem('currentUser');
 let openedCanvasIndex = null;
 
+let hasUnsavedChanges = false;
+
 // Brush state
 let drawing = false;
 let brushColor = colorPicker.value;
@@ -93,6 +95,7 @@ canvas.addEventListener('mousedown', e => {
   ctx.fillStyle = brushColor;
   ctx.fill();
 });
+canvas.addEventListener('mousedown', () => { hasUnsavedChanges = true; });
 
 canvas.addEventListener('mousemove', e => {
   if (!drawing) return;
@@ -106,6 +109,7 @@ canvas.addEventListener('mousemove', e => {
   lastX = e.offsetX;
   lastY = e.offsetY;
 });
+canvas.addEventListener('mousemove', () => { if (drawing) hasUnsavedChanges = true; });
 
 canvas.addEventListener('mouseup', () => {
   if (drawing) saveState();
@@ -144,6 +148,7 @@ document.getElementById('save').addEventListener('click', () => {
   });
   document.body.appendChild(popup);
   setTimeout(() => popup.remove(), 1500);
+  hasUnsavedChanges = false;
 });
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -219,4 +224,44 @@ function promptLogin(callback) {
       loginMsg.textContent = 'Invalid credentials.';
     }
   };
+}
+
+// const userCircle = document.getElementById('userCircle');
+if (userCircle) {
+  userCircle.addEventListener('click', function(e) {
+    if (hasUnsavedChanges) {
+      e.preventDefault();
+      showSaveDiscardPopup(() => {
+        // Save, then go to dashboard
+        document.getElementById('save').click();
+        setTimeout(() => { window.location.href = '../dashboard/dashboard.html'; }, 100); // Give save time
+      }, () => {
+        // Discard, go to dashboard
+        window.location.href = '../dashboard/dashboard.html';
+      });
+    }
+    // else, allow normal navigation
+  });
+}
+
+function showSaveDiscardPopup(onSave, onDiscard) {
+  const modal = document.createElement('div');
+  Object.assign(modal.style, {
+    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+    background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', zIndex: 3000
+  });
+  modal.innerHTML = `
+    <div style="background:#fff;padding:32px 24px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:300px;">
+      <h3 style="margin-top:0;">Unsaved Changes</h3>
+      <p style="margin-bottom:18px;">You have unsaved changes. Save before leaving?</p>
+      <div style="display:flex;gap:16px;justify-content:flex-end;">
+        <button id="popupSave" style="padding:8px 18px;background:#05386B;color:#fff;border:none;border-radius:6px;font-weight:bold;">Save</button>
+        <button id="popupDiscard" style="padding:8px 18px;background:#eee;color:#333;border:none;border-radius:6px;">Discard</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.querySelector('#popupSave').onclick = () => { modal.remove(); onSave(); };
+  modal.querySelector('#popupDiscard').onclick = () => { modal.remove(); onDiscard(); };
 }

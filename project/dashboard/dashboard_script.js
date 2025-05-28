@@ -46,3 +46,33 @@ if (saved.length === 0) {
     gallery.appendChild(previewCanvas);
   });
 }
+
+// Add "new canvas" preview
+const newCanvasPreview = document.createElement('canvas');
+newCanvasPreview.width = PREVIEW_WIDTH;
+newCanvasPreview.height = PREVIEW_HEIGHT;
+newCanvasPreview.style.border = "2px dashed #bbb";
+newCanvasPreview.style.borderRadius = "8px";
+newCanvasPreview.style.cursor = "pointer";
+newCanvasPreview.title = "Create a new canvas";
+
+const ctxNew = newCanvasPreview.getContext('2d');
+// Draw a grey plus sign in the center
+ctxNew.strokeStyle = "#bbb";
+ctxNew.lineWidth = 8;
+ctxNew.lineCap = "round";
+const centerX = PREVIEW_WIDTH / 2;
+const centerY = PREVIEW_HEIGHT / 2;
+const plusLen = Math.min(PREVIEW_WIDTH, PREVIEW_HEIGHT) * 0.35;
+ctxNew.beginPath();
+ctxNew.moveTo(centerX - plusLen / 2, centerY);
+ctxNew.lineTo(centerX + plusLen / 2, centerY);
+ctxNew.moveTo(centerX, centerY - plusLen / 2);
+ctxNew.lineTo(centerX, centerY + plusLen / 2);
+ctxNew.stroke();
+
+newCanvasPreview.onclick = () => {
+  localStorage.removeItem('openImage');
+  window.location.href = "../notebook_interface/notebook.html";
+};
+gallery.appendChild(newCanvasPreview);
