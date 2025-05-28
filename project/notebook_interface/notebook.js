@@ -83,7 +83,9 @@ function undo() {
 }
 
 // // --- Undo controls ---
-// undoButton.addEventListener('click', undo);
+undoButton.addEventListener('click', undo);
+
+// the ctrl-z functionality was deleted due to generating too many bugs
 // // Ctrl+Z / Cmd+Z support
 // window.addEventListener('keydown', e => {
 //   const key = e.key.toLowerCase();
