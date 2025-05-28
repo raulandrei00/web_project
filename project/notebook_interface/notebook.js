@@ -181,32 +181,31 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Insert these changes into your notebook.js, replacing the existing promptLogin function:
+
 function promptLogin(callback) {
-  // Simple modal prompt (like start.html)
+  // Create the modal backdrop and content like start page
   const modal = document.createElement('div');
-  modal.style.position = 'fixed';
-  modal.style.top = 0;
-  modal.style.left = 0;
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.background = 'rgba(0,0,0,0.3)';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.zIndex = 2000;
+  modal.id = 'loginModal';
+  modal.classList.add('modal', 'active');
 
   modal.innerHTML = `
-    <div style="background:#fff;padding:32px 24px;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:300px;">
-      <h3 style="margin-top:0;">Login Required</h3>
-      <div id="loginMsg" style="color:#c00;margin-bottom:10px;"></div>
+    <div class="modal-content">
+      <h3>Login Required</h3>
+      <div id="loginMsg" class="message"></div>
       <form id="loginForm">
-        <div style="margin-bottom:10px;">
-          <input id="loginUsername" placeholder="Username" style="width:100%;padding:8px;" required>
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" placeholder="Username" required />
         </div>
-        <div style="margin-bottom:16px;">
-          <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:8px;" required>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Password" required />
         </div>
-        <button type="submit" style="width:100%;padding:10px;background:#05386B;color:#fff;border:none;border-radius:6px;font-weight:bold;">Log In</button>
+        <div class="modal-actions">
+          <button type="submit" class="btn-center">Log In</button>
+          <button type="button" id="closeLoginModal" class="btn-center">Cancel</button>
+        </div>
       </form>
     </div>
   `;
@@ -215,30 +214,42 @@ function promptLogin(callback) {
 
   const loginForm = modal.querySelector('#loginForm');
   const loginMsg = modal.querySelector('#loginMsg');
+  const closeBtn = modal.querySelector('#closeLoginModal');
+
+  // Cancel button closes the modal
+  closeBtn.addEventListener('click', () => {
+    modal.remove();
+  });
+
   loginForm.onsubmit = e => {
     e.preventDefault();
-    const u = loginForm.loginUsername.value.trim();
-    const p = loginForm.loginPassword.value;
+    const u = modal.querySelector('#loginUsername').value.trim();
+    const p = modal.querySelector('#loginPassword').value;
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const valid = users.some(x => x.username === u && x.password === p);
     if (valid) {
       localStorage.setItem('currentUser', u);
       modal.remove();
       if (callback) callback(u);
-    const userCircle = document.getElementById('userCircle');   
-    if (userCircle && u) {
-        userCircle.textContent = u.charAt(0).toUpperCase();
-    }
     } else {
       loginMsg.textContent = 'Invalid credentials.';
     }
   };
-  
 }
+
 
 // const userCircle = document.getElementById('userCircle');
 if (userCircle) {
   userCircle.addEventListener('click', function(e) {
+    const currentUser = localStorage.getItem('currentUser');
+    // If not logged in, show login modal
+    if (!currentUser) {
+      e.preventDefault();
+      promptLogin(() => {
+        window.location.href = '../dashboard/dashboard.html';
+      });
+      return;
+    }
     if (hasUnsavedChanges) {
       e.preventDefault();
       showSaveDiscardPopup(() => {
