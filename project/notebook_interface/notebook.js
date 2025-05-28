@@ -140,7 +140,13 @@ document.getElementById('save').addEventListener('click', () => {
     return;
   }
   const imgSrc = canvas.toDataURL('image/png');
-  const canvasData = { img: imgSrc, width: canvas.width, height: canvas.height };
+  const canvasName = document.getElementById('canvasName').value || "Untitled";
+  const canvasData = {
+    img: imgSrc,
+    width: canvas.width,
+    height: canvas.height,
+    name: canvasName
+  };
   const userKey = `savedImages_${username}`;
   let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
   if (openedCanvasIndex !== null && saved[openedCanvasIndex]) {

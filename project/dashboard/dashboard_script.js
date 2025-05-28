@@ -17,6 +17,21 @@ if (saved.length === 0) {
   emptyMsg.style.display = 'block';
 } else {
   saved.forEach((data, idx) => {
+    console.log("Name:", data.name);
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+    container.style.margin = '12px';
+
+    const nameElem = document.createElement('div');
+    nameElem.textContent = data.name || 'Untitled';
+    nameElem.style.marginBottom = '6px';
+    nameElem.style.fontWeight = 'bold';
+    nameElem.style.fontSize = '1rem';
+    nameElem.style.color = '#05386B';
+
+    container.appendChild(nameElem);
     const previewCanvas = document.createElement('canvas');
     previewCanvas.width = PREVIEW_WIDTH;
     previewCanvas.height = PREVIEW_HEIGHT;
@@ -45,7 +60,8 @@ if (saved.length === 0) {
       localStorage.setItem('openImage', JSON.stringify(dataWithIndex));
       window.location.href = "../notebook_interface/notebook.html";
     };
-    gallery.appendChild(previewCanvas);
+    container.appendChild(previewCanvas);
+    gallery.appendChild(container);
   });
 }
 
@@ -77,4 +93,23 @@ newCanvasPreview.onclick = () => {
   localStorage.removeItem('openImage');
   window.location.href = "../notebook_interface/notebook.html";
 };
-gallery.appendChild(newCanvasPreview);
+
+const newCanvasContainer = document.createElement('div');
+newCanvasContainer.style.display = 'flex';
+newCanvasContainer.style.flexDirection = 'column';
+newCanvasContainer.style.alignItems = 'center';
+newCanvasContainer.style.margin = '12px';
+
+const newCanvasLabel = document.createElement('div');
+newCanvasLabel.textContent = 'new canvas';
+newCanvasLabel.style.marginBottom = '6px';
+newCanvasLabel.style.fontWeight = 'bold';
+newCanvasLabel.style.fontSize = '1rem';
+newCanvasLabel.style.color = '#05386B';
+
+newCanvasContainer.appendChild(newCanvasLabel);
+newCanvasContainer.appendChild(newCanvasPreview);
+
+gallery.appendChild(newCanvasContainer);
+
+// gallery.appendChild(newCanvasPreview);
