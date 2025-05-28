@@ -72,14 +72,38 @@ gallery.appendChild(newCanvasContainer);
     container.style.alignItems = 'center';
     container.style.margin = '12px';
 
-    const nameElem = document.createElement('div');
-    nameElem.textContent = data.name || 'Untitled';
-    nameElem.style.marginBottom = '6px';
-    nameElem.style.fontWeight = 'bold';
-    nameElem.style.fontSize = '1rem';
-    nameElem.style.color = '#05386B';
+    const nameWrapper = document.createElement('div');
+nameWrapper.style.position = 'relative';
+nameWrapper.style.display = 'inline-block';
+nameWrapper.style.width = `${PREVIEW_WIDTH}px`;
+nameWrapper.style.boxSizing = 'border-box';
+nameWrapper.style.textAlign = 'center';
 
-    container.appendChild(nameElem);
+const nameText = document.createElement('span');
+nameText.textContent = data.name || 'Untitled';
+nameText.style.fontWeight = 'bold';
+nameText.style.fontSize = '1rem';
+nameText.style.color = '#05386B';
+
+const editBtn = document.createElement('span');
+editBtn.textContent = '✏️';
+editBtn.style.marginLeft = '8px';
+editBtn.style.cursor = 'pointer';
+editBtn.style.display = 'none';
+editBtn.title = 'Edit name';
+editBtn.tabIndex = 0;
+
+nameWrapper.appendChild(nameText);
+nameWrapper.appendChild(editBtn);
+
+nameWrapper.addEventListener('mouseenter', () => {
+  editBtn.style.display = 'inline';
+});
+nameWrapper.addEventListener('mouseleave', () => {
+  editBtn.style.display = 'none';
+});
+
+    container.appendChild(nameWrapper);
     const previewCanvas = document.createElement('canvas');
     previewCanvas.width = PREVIEW_WIDTH;
     previewCanvas.height = PREVIEW_HEIGHT;
@@ -110,5 +134,37 @@ gallery.appendChild(newCanvasContainer);
     };
     container.appendChild(previewCanvas);
     gallery.appendChild(container);
+
+    editBtn.onclick = () => {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = nameText.textContent;
+      input.style.fontSize = nameText.style.fontSize;
+      input.style.fontWeight = nameText.style.fontWeight;
+      input.style.color = nameText.style.color;
+      input.style.width = `${Math.max(80, nameText.offsetWidth)}px`;
+      nameWrapper.replaceChild(input, nameText);
+      input.focus();
+      input.select();
+
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          const newName = input.value.trim() || 'Untitled';
+          nameText.textContent = newName;
+          data.name = newName;
+          saved[idx].name = newName;
+          localStorage.setItem(userKey, JSON.stringify(saved));
+          nameWrapper.replaceChild(nameText, input);
+          editBtn.style.display = 'none';
+        } else if (e.key === 'Escape') {
+          nameWrapper.replaceChild(nameText, input);
+          editBtn.style.display = 'none';
+        }
+      };
+      input.onblur = () => {
+        nameWrapper.replaceChild(nameText, input);
+        editBtn.style.display = 'none';
+      };
+    };
   });
 }
