@@ -41,6 +41,23 @@ signUpForm.onsubmit = e => {
     signUpMsg.textContent = 'Account created!';
     signUpMsg.classList.add('success');
     setTimeout(() => signUpModal.classList.remove('active'), 800);
+    currentUser = u;
+    localStorage.setItem('currentUser', currentUser);
+    // Show a temporary popup message
+    const popup = document.createElement('div');
+    popup.textContent = `Welcome, ${u}!`;
+    popup.style.position = 'fixed';
+    popup.style.top = '30px';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.background = '#4caf50';
+    popup.style.color = '#fff';
+    popup.style.padding = '12px 24px';
+    popup.style.borderRadius = '6px';
+    popup.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+    popup.style.zIndex = '9999';
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 1500);
   }
 };
 
