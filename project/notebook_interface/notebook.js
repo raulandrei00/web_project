@@ -240,7 +240,9 @@ if (userCircle) {
         window.location.href = '../dashboard/dashboard.html';
       });
     }
-    // else, allow normal navigation
+    else {
+        window.location.href = '../dashboard/dashboard.html';
+    }
   });
 }
 
