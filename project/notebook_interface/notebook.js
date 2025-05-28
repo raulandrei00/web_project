@@ -27,6 +27,15 @@ clearButton.addEventListener('click', () => {
   saveState();
 });
 
+const userCircle = document.getElementById('userCircle');
+            const dashboardHint = document.getElementById('dashboardHint');
+            userCircle.addEventListener('mouseenter', () => {
+                dashboardHint.style.display = 'block';
+            });
+            userCircle.addEventListener('mouseleave', () => {
+                dashboardHint.style.display = 'none';
+            });
+
 // --- Dynamic canvas growth ---
 const GROW_MARGIN = 10;
 const GROW_AMOUNT = 50;
