@@ -13,6 +13,7 @@ const emptyMsg = document.getElementById('emptyMsg');
 const PREVIEW_WIDTH = 300;
 const PREVIEW_HEIGHT = 200;
 
+
 if (saved.length === 0) {
   emptyMsg.style.display = 'block';
 } else {

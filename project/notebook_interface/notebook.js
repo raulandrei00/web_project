@@ -80,16 +80,16 @@ function undo() {
   }
 }
 
-// --- Undo controls ---
-undoButton.addEventListener('click', undo);
-// Ctrl+Z / Cmd+Z support
-window.addEventListener('keydown', e => {
-  const key = e.key.toLowerCase();
-  if ((e.ctrlKey || e.metaKey) && key === 'z') {
-    e.preventDefault();
-    undo();
-  }
-});
+// // --- Undo controls ---
+// undoButton.addEventListener('click', undo);
+// // Ctrl+Z / Cmd+Z support
+// window.addEventListener('keydown', e => {
+//   const key = e.key.toLowerCase();
+//   if ((e.ctrlKey || e.metaKey) && key === 'z') {
+//     e.preventDefault();
+//     undo();
+//   }
+// });
 
 // --- Drawing logic ---
 let lastX = 0;
@@ -129,16 +129,9 @@ canvas.addEventListener('mouseleave', () => {
   drawing = false;
 });
 
-// --- Save/Load functionality ---
-document.getElementById('save').addEventListener('click', () => {
-  let username = localStorage.getItem('currentUser');
-  if (!username) {
-    promptLogin(() => {
-      // Try saving again after successful login
-      document.getElementById('save').click();
-    });
-    return;
-  }
+let initialised = false;
+
+function saveCanvas() {
   const imgSrc = canvas.toDataURL('image/png');
   const canvasName = document.getElementById('canvasName').value || "Untitled";
   const canvasData = {
@@ -147,11 +140,17 @@ document.getElementById('save').addEventListener('click', () => {
     height: canvas.height,
     name: canvasName
   };
+  
   const userKey = `savedImages_${username}`;
   let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
   if (openedCanvasIndex !== null && saved[openedCanvasIndex]) {
     saved[openedCanvasIndex] = canvasData;
-  } else {
+  } else if (initialised === false) {
+    initialised = true;
+    saved.push(canvasData);
+  }
+  else {
+    saved.pop(); // Remove the last item if we are not editing an existing canvas
     saved.push(canvasData);
   }
   localStorage.setItem(userKey, JSON.stringify(saved));
@@ -164,6 +163,19 @@ document.getElementById('save').addEventListener('click', () => {
   document.body.appendChild(popup);
   setTimeout(() => popup.remove(), 1500);
   hasUnsavedChanges = false;
+}
+
+// --- Save/Load functionality ---
+document.getElementById('save').addEventListener('click', () => {
+  let username = localStorage.getItem('currentUser');
+  if (!username) {
+    promptLogin(() => {
+      // Try saving again after successful login
+      document.getElementById('save').click();
+    });
+    return;
+  }
+  saveCanvas();
 });
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -184,6 +196,14 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     // initial blank state
     saveState();
+    const userKey = `savedImages_${username}`;
+    let canvas_no = 1;
+    let saved = JSON.parse(localStorage.getItem(userKey) || "[]");
+    while (saved.some(item => item.name === "Canvas " + canvas_no)) {
+      canvas_no++;
+    }
+    namebox = document.getElementById('canvasName');
+    namebox.value = "Canvas " + canvas_no;
   }
 });
 
@@ -237,6 +257,7 @@ function promptLogin(callback) {
       localStorage.setItem('currentUser', u);
       // Update the userCircle to the new initial
       const userCircle = document.getElementById('userCircle');
+      username = u;
       if (userCircle) userCircle.textContent = u.charAt(0).toUpperCase();
       modal.remove();
       if (callback) callback(u);
