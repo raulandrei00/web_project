@@ -89,6 +89,20 @@ loginForm.onsubmit = e => {
     document.body.appendChild(popup);
     setTimeout(() => popup.remove(), 1500);
   } else {
+    const popup = document.createElement('div');
+    popup.textContent = 'Invalid credentials.';
+    popup.style.position = 'fixed';
+    popup.style.top = '30px';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.background = '#e53935';
+    popup.style.color = '#fff';
+    popup.style.padding = '12px 24px';
+    popup.style.borderRadius = '6px';
+    popup.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+    popup.style.zIndex = '9999';
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 1500);
     loginMsg.textContent = 'Invalid credentials.';
   }
   loginModal.classList.remove('active');
